@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Collaboration Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  /* ─── Reset & Base ─── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ─── Variables ─── */
+  :root {
+    --bg:          #0f1117;
+    --card-bg:     #1a1d27;
+    --card-border: rgba(255,255,255,.06);
+    --accent-a:    #e8735a;   /* warm coral */
+    --accent-b:    #5bb8d4;   /* cool teal  */
+    --accent-c:    #c778dd;   /* soft violet */
+    --text-primary:  #f0eee9;
+    --text-muted:    rgba(240,238,233,.45);
+    --glow-a:      rgba(232,115,90,.25);
+    --glow-b:      rgba(91,184,212,.25);
+  }
+
+  /* ─── Body / Layout ─── */
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 60px 20px 80px;
+  }
+
+  /* ─── Ambient background blobs ─── */
+  body::before, body::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: .35;
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::before {
+    width: 420px; height: 420px;
+    background: var(--accent-a);
+    top: -120px; left: -100px;
+  }
+  body::after {
+    width: 380px; height: 380px;
+    background: var(--accent-b);
+    bottom: -80px; right: -80px;
+  }
+
+  /* ─── Card Wrapper ─── */
+  .card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 680px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 52px 44px 48px;
+    box-shadow:
+      0  4px  24px rgba(0,0,0,.35),
+      0 0 80px rgba(232,115,90,.06);
+    animation: fadeUp .6s cubic-bezier(.22,1,.36,1) both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0);    }
+  }
+
+  /* ─── Header ─── */
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.7rem, 4vw, 2.3rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-bottom: 8px;
+    letter-spacing: -.5px;
+  }
+
+  /* Underline accent strip */
+  .title-accent {
+    width: 48px; height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--accent-a), var(--accent-c));
+    margin-bottom: 18px;
+  }
+
+  p {
+    font-size: .97rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 30px;
+    font-weight: 400;
+  }
+
+  /* ─── List ─── */
+  ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  li {
+    position: relative;
+    background: rgba(255,255,255,.035);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 14px 18px 14px 52px;   /* left space for avatar circle */
+    font-size: .95rem;
+    color: var(--text-primary);
+    font-weight: 500;
+    transition: background .2s, border-color .2s, transform .15s;
+    animation: slideIn .45s cubic-bezier(.22,1,.36,1) both;
+  }
+  li:hover {
+    background: rgba(255,255,255,.06);
+    border-color: rgba(255,255,255,.14);
+    transform: translateX(4px);
+  }
+
+  /* staggered entrance */
+  li:nth-child(1)  { animation-delay: .08s; }
+  li:nth-child(2)  { animation-delay: .13s; }
+  li:nth-child(3)  { animation-delay: .18s; }
+  li:nth-child(4)  { animation-delay: .23s; }
+  li:nth-child(5)  { animation-delay: .28s; }
+  li:nth-child(6)  { animation-delay: .33s; }
+  li:nth-child(7)  { animation-delay: .38s; }
+  li:nth-child(8)  { animation-delay: .43s; }
+  li:nth-child(9)  { animation-delay: .48s; }
+  li:nth-child(10) { animation-delay: .53s; }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-18px); }
+    to   { opacity: 1; transform: translateX(0);     }
+  }
+
+  /* Avatar initials circle (::before) */
+  li::before {
+    content: attr(data-init);
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .75rem;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0;
+  }
+
+  /* Unique colours per student via nth-child */
+  li:nth-child(1)::before  { background: linear-gradient(135deg,#e8735a,#d45a43); }
+  li:nth-child(2)::before  { background: linear-gradient(135deg,#5bb8d4,#3da0ba); }
+  li:nth-child(3)::before  { background: linear-gradient(135deg,#c778dd,#a85ec2); }
+  li:nth-child(4)::before  { background: linear-gradient(135deg,#6bcb77,#4aaf5a); }
+  li:nth-child(5)::before  { background: linear-gradient(135deg,#f0a55a,#d48a3a); }
+  li:nth-child(6)::before  { background: linear-gradient(135deg,#7b8cde,#5a6ec2); }
+  li:nth-child(7)::before  { background: linear-gradient(135deg,#e07b8e,#c25a6e); }
+  li:nth-child(8)::before  { background: linear-gradient(135deg,#5cd6c0,#3ab8a2); }
+  li:nth-child(9)::before  { background: linear-gradient(135deg,#d4c36a,#b0a44d); }
+  li:nth-child(10)::before { background: linear-gradient(135deg,#8e7bd4,#6f5cb8); }
+
+  /* Completed-entry glow ring on Mahsa's row */
+  li#Mahsa {
+    border-color: rgba(232,115,90,.35);
+    box-shadow: 0 0 14px rgba(232,115,90,.18);
+  }
+
+  /* ─── Footer note ─── */
+  .footer-note {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--card-border);
+    font-size: .82rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+  .footer-note span {
+    color: var(--accent-a);
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>Our Class Collaboration Page</h1>
+  <div class="title-accent"></div>
+  <p>Each student will edit <strong style="color:var(--accent-b)">ONLY</strong> the line assigned to them:</p>
+
+  <ul>
+    <li id="Mahsa"    data-init="M">Mahsa likes painting, gaming. My favourite colour is red.</li>
+    <li id="Adebayo"  data-init="A">Adebayo — edit this line ONLY</li>
+    <li id="Ilyas"    data-init="I">Ilyas — edit this line ONLY</li>
+    <li id="Kiyu"     data-init="K">Kiyu — edit this line ONLY</li>
+    <li id="Kyle"     data-init="K">Kyle — edit this line ONLY</li>
+    <li id="Mateo"    data-init="M">Mateo — edit this line ONLY</li>
+    <li id="Matthew"  data-init="M">Matthew — edit this line ONLY</li>
+    <li id="Tyvon"    data-init="T">Tyvon — edit this line ONLY</li>
+    <li id="Ulrich"   data-init="U">Ulrich — edit this line ONLY</li>
+    <li id="Zak"      data-init="Z">Zak — edit this line ONLY</li>
+  </ul>
+
+  <div class="footer-note">✦ Each row belongs to <span>one person</span> — respect the collaboration!</div>
+</div>
+
+</body>
+</html>
